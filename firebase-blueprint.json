@@ -1,0 +1,72 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User fitness profile and settings",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "age": { "type": "integer" },
+        "weight": { "type": "number", "description": "Weight in kg" },
+        "height": { "type": "number", "description": "Height in cm" },
+        "fitnessGoal": { "type": "string", "enum": ["lose_weight", "maintain", "gain_muscle"] },
+        "dailyCalorieGoal": { "type": "integer" },
+        "subscriptionTier": { "type": "string", "enum": ["free", "premium"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Meal": {
+      "title": "Meal Log",
+      "description": "A single meal entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "calories": { "type": "integer" },
+        "protein": { "type": "integer" },
+        "carbs": { "type": "integer" },
+        "fats": { "type": "integer" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "calories", "timestamp"]
+    },
+    "Workout": {
+      "title": "Workout Session",
+      "description": "A logged workout activity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "type": { "type": "string" },
+        "duration": { "type": "integer", "description": "Duration in minutes" },
+        "caloriesBurned": { "type": "integer" },
+        "notes": { "type": "string" },
+        "exercises": { 
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "type", "duration", "timestamp"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "Root user profile document"
+    },
+    "users/{userId}/meals/{mealId}": {
+      "schema": "Meal",
+      "description": "User's individual meal logs"
+    },
+    "users/{userId}/workouts/{workoutId}": {
+      "schema": "Workout",
+      "description": "User's workout history"
+    }
+  }
+}
