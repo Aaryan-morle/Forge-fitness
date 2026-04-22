@@ -15,11 +15,27 @@ export function Login() {
     setIsLoading(true);
     setError(null);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log('Login success:', result.user.email);
       navigate('/');
     } catch (error: any) {
-      console.error('Login failed:', error);
-      setError('Authentication failed. Please try again.');
+      console.error('Login failed details:', error);
+      // Clean up common firebase error messages for users
+      let userFriendlyMessage = 'Authentication failed. Please try again.';
+      
+      if (error.code === 'auth/popup-blocked') {
+        userFriendlyMessage = 'Login popup was blocked. Please allow popups for this site.';
+      } else if (error.code === 'auth/popup-closed-by-user') {
+        userFriendlyMessage = 'Login was cancelled. Please try again.';
+      } else if (error.code === 'auth/unauthorized-domain') {
+        userFriendlyMessage = 'Current domain is not authorized in Firebase Console.';
+      } else if (error.code === 'auth/operation-not-allowed') {
+        userFriendlyMessage = 'Google login is not enabled in Firebase project settings.';
+      } else if (error.message) {
+        userFriendlyMessage = error.message;
+      }
+      
+      setError(userFriendlyMessage);
     } finally {
       setIsLoading(false);
     }
@@ -84,6 +100,9 @@ export function Login() {
               LOGIN VIA CREDENTIALS
             </Button>
 
+            <p className="text-center text-[10px] text-slate-400 leading-relaxed px-4">
+              Tip: Ensure popups are allowed and you aren't in private mode if login fails.
+            </p>
             <p className="text-center text-[10px] text-slate-400 leading-relaxed px-4">
               By proceeding, you agree to our <span className="text-indigo-600 underline">Terms</span> and <span className="text-indigo-600 underline">Privacy Policy</span>.
             </p>
