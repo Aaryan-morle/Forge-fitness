@@ -48,7 +48,16 @@
         "notes": { "type": "string" },
         "exercises": { 
           "type": "array",
-          "items": { "type": "object" }
+          "items": { 
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "sets": { "type": "integer" },
+              "reps": { "type": "integer" },
+              "weight": { "type": "number", "description": "Weight in kg" }
+            },
+            "required": ["name", "sets", "reps"]
+          }
         },
         "timestamp": { "type": "string", "format": "date-time" }
       },
